@@ -1,11 +1,12 @@
+// views/consumption_history_page.dart
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../controllers/consumo_controller.dart';
+import '../models/consumo_model.dart';
 import '../widgets/bottom_nav_bar.dart';
-import 'package:intl/intl.dart';  // Para formatar as datas
 
 class ConsumptionHistoryPage extends StatefulWidget {
-  final String userId;  // Passe o ID do usuário ao navegar para essa página
-  
+  final String userId;
+
   ConsumptionHistoryPage({required this.userId});
 
   @override
@@ -13,30 +14,14 @@ class ConsumptionHistoryPage extends StatefulWidget {
 }
 
 class _ConsumptionHistoryPageState extends State<ConsumptionHistoryPage> {
-  Future<List<dynamic>> _getConsumptionHistory() async {
-    final supabase = Supabase.instance.client;
-
-    // Query para buscar o histórico de consumo, incluindo os dados da cerveja relacionada
-    final response = await supabase
-        .from('consumo')
-        .select('created_at, quantidade, valor, cerveja(nome)')
-        .eq('id_user', widget.userId)  // Filtra pelo ID do cliente
-        .order('created_at', ascending: false);  // Ordena do mais recente para o mais antigo
-        
-
-    if (response.isEmpty) {
-      throw Exception('Não possui histórico de consumo para esse usuário');
-    }
-
-    return response as List<dynamic>;
-  }
+  final ConsumoController _consumoController = ConsumoController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Histórico de Consumo')),
-      body: FutureBuilder<List<dynamic>>(
-        future: _getConsumptionHistory(),
+      body: FutureBuilder<List<Consumo>>(
+        future: _consumoController.getConsumptionHistory(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -58,16 +43,14 @@ class _ConsumptionHistoryPageState extends State<ConsumptionHistoryPage> {
               columns: const <DataColumn>[
                 DataColumn(label: Text('Data')),
                 DataColumn(label: Text('Cerveja')),
-                //DataColumn(label: Text('Quantidade')),
                 DataColumn(label: Text('Valor')),
               ],
               rows: consumptionHistory.map<DataRow>((item) {
                 return DataRow(
                   cells: <DataCell>[
-                    DataCell(Text(DateFormat('dd/MM/yyyy H:m').format(DateTime.parse(item['created_at'])))),
-                    DataCell(Text(item['cerveja']['nome'] ?? '')),
-                    //DataCell(Text(item['quantidade'].toString())),
-                    DataCell(Text('R\$ ${item['valor'].toStringAsFixed(2)}')),
+                    DataCell(Text(item.formattedDate)),
+                    DataCell(Text(item.cervejaNome)),
+                    DataCell(Text('R\$ ${item.valor.toStringAsFixed(2)}')),
                   ],
                 );
               }).toList(),

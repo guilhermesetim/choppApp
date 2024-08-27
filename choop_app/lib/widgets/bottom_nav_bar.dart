@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../views/buy_credits_page.dart';
-import '../views/consumption_history_page.dart';
-import '../views/locations_page.dart';
+import '../views/comprar_view.dart';
+import '../views/consumo_view.dart';
 import '../views/home_page.dart';
-import '../views/list_beer.dart';
+import '../views/cerveja_view.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -32,10 +31,10 @@ class BottomNavBar extends StatelessWidget {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => CervejasPage()));
         break;
-      case 4:
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LocationsPage()));
-        break;
+      // case 4:
+      //   Navigator.of(context).pushReplacement(
+      //       MaterialPageRoute(builder: (context) => LocationsPage()));
+      //   break;
     }
   }
 
@@ -52,7 +51,7 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.credit_card), label: 'Créditos'),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
         BottomNavigationBarItem(icon: Icon(Icons.local_drink), label: 'Cervejas'),
-        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Locais'),
+        //BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Locais'),
       ],
     );
   }

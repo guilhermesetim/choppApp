@@ -1,5 +1,7 @@
+// views/buy_credits_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../controllers/comprar_controller.dart';
 import '../controllers/auth_provider.dart';
 import '../widgets/bottom_nav_bar.dart';
 
@@ -9,6 +11,7 @@ class BuyCreditsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final usuarioController = UsuarioController(authProvider: authProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('Comprar Créditos')),
@@ -16,7 +19,7 @@ class BuyCreditsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('Saldo atual: R\$ ${authProvider.balance.toStringAsFixed(2)}'),
+            Text('Saldo atual: R\$ ${usuarioController.getSaldo().toStringAsFixed(2)}'),
             SizedBox(height: 20),
             TextField(
               controller: _creditController,
@@ -32,28 +35,10 @@ class BuyCreditsPage extends StatelessWidget {
                 final valueToAdd = double.tryParse(_creditController.text);
 
                 if (valueToAdd != null && valueToAdd > 0) {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Confirmação'),
-                        content: Text('Deseja adicionar R\$ ${valueToAdd.toStringAsFixed(2)} ao seu saldo?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: Text('Confirmar'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  
+                  final confirmed = await usuarioController.confirmarAdicaoDeCreditos(context, valueToAdd);
+
                   if (confirmed == true) {
-                    await authProvider.updateBalance(valueToAdd);
+                    await usuarioController.adicionarCreditos(valueToAdd);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Saldo atualizado com sucesso!')),
                     );

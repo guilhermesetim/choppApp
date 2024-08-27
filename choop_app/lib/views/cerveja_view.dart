@@ -1,6 +1,8 @@
+// views/cervejas_page.dart
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../controllers/cerveja_controller.dart';
+import '../models/cerveja_model.dart';
 import '../widgets/bottom_nav_bar.dart';
 
 class CervejasPage extends StatefulWidget {
@@ -9,19 +11,7 @@ class CervejasPage extends StatefulWidget {
 }
 
 class _CervejasPageState extends State<CervejasPage> {
-  Future<List<dynamic>> _getCervejas() async {
-    final supabase = Supabase.instance.client;
-
-    final response = await supabase
-        .from('cerveja')
-        .select('');
-
-    if (response.isEmpty) {
-      throw Exception('Erro ao carregar cervejas:');
-    }
-
-    return response as List<dynamic>;
-  }
+  final CervejaController _cervejaController = CervejaController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +19,8 @@ class _CervejasPageState extends State<CervejasPage> {
       appBar: AppBar(
         title: Text('Lista de Cervejas'),
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: _getCervejas(),
+      body: FutureBuilder<List<Cerveja>>(
+        future: _cervejaController.getCervejas(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -59,7 +49,7 @@ class _CervejasPageState extends State<CervejasPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CachedNetworkImage(
-                        imageUrl: cerveja['imagem'],
+                        imageUrl: cerveja.imagem,
                         placeholder: (context, url) => Center(child: CircularProgressIndicator()),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                         height: 400,
@@ -68,17 +58,17 @@ class _CervejasPageState extends State<CervejasPage> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        cerveja['nome'],
+                        cerveja.nome,
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 5),
                       Text(
-                        'Preço: R\$ ${cerveja['valor'].toStringAsFixed(2)}',
+                        'Preço: R\$ ${cerveja.valor.toStringAsFixed(2)}',
                         style: TextStyle(fontSize: 16, color: Colors.green),
                       ),
                       SizedBox(height: 5),
                       Text(
-                        cerveja['descricao'],
+                        cerveja.descricao,
                         style: TextStyle(fontSize: 14),
                       ),
                     ],

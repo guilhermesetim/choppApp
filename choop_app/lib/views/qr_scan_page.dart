@@ -77,7 +77,7 @@ class _QRScanPageState extends State<QRScanPage> {
     };
 
     // Envia os dados para o servidor Python
-    final response = await http.post(
+    await http.post(
       Uri.parse('http://192.168.0.126:5000/enviar_dados'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(requestData),
@@ -91,6 +91,15 @@ class _QRScanPageState extends State<QRScanPage> {
         .eq('id', authProvider.cod);
 
     authProvider.updateBalance(-precoCerveja);
+
+    await supabase
+        .from('consumo')
+        .insert({
+            'quantidade': 400, 
+            'valor': precoCerveja,
+            'id_user': authProvider.cod,
+            'id_cerveja': cervejaId,
+          });
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Consumo realizado! Seu novo saldo é de $novoSaldo')),
