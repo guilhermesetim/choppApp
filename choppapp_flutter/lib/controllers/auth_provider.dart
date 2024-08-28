@@ -66,6 +66,8 @@ Future<bool> signUp(String email, String password, String nome) async {
       password: password,
     );
 
+    print(response);
+
     // Verifica se o usuário foi criado com sucesso
     if (response.user == null) {
       return false;

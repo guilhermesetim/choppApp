@@ -1,9 +1,10 @@
 import serial
+import sys
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # Configuração da porta serial
-ser = serial.Serial('/dev/ttyUSB0', 9600)  # Defina a porta correta para o seu ESP32
+ser = serial.Serial(sys.argv[1], 9600)
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):

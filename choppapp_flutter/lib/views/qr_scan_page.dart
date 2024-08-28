@@ -78,13 +78,14 @@ class _QRScanPageState extends State<QRScanPage> {
 
     // Envia os dados para o servidor Python
     await http.post(
-      Uri.parse('http://192.168.0.126:5000/enviar_dados'),
+      Uri.parse('http://10.21.80.73:5000/enviar_dados'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(requestData),
     );
 
     double novoSaldo = authProvider.balance - precoCerveja;
 
+    // Atualiza o saldo do usuário
     await supabase
         .from('usuarios')
         .update({'saldo': novoSaldo})
@@ -92,6 +93,7 @@ class _QRScanPageState extends State<QRScanPage> {
 
     authProvider.updateBalance(-precoCerveja);
 
+    // Insere o consumo no banco de dados
     await supabase
         .from('consumo')
         .insert({
@@ -101,15 +103,22 @@ class _QRScanPageState extends State<QRScanPage> {
             'id_cerveja': cervejaId,
           });
 
+    // Exibe uma mensagem de sucesso
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Consumo realizado! Seu novo saldo é de $novoSaldo')),
     );
+
+    // Retorna para a tela anterior
+    Navigator.pop(context);
+
   } catch (e) {
+    // Exibe uma mensagem de erro
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Erro ao enviar QR code: $e')),
     );
   }
 }
+
 
 
   // Future<void> _sendQRCodeToSupabase(String qrCode) async {
