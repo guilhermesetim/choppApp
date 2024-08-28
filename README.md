@@ -9,6 +9,7 @@ ChoppApp é um aplicativo Flutter que permite aos usuários escanear QR Codes pa
 ## Funcionalidades
 
 * **Login:** Autenticação de usuários utilizando Supabase.
+* **Cadastro** Cadastro de usuário com confirmação por e-mail.
 * **Consumo via QR Code:** Escaneie o QR Code na torneira do chopp para liberar a bebida.
 * **Saldo e Compra:** Verifique o saldo disponível e compre créditos adicionais diretamente pelo app.
 * **Histórico:** Consulte o histórico de consumo, incluindo detalhes de cada sessão.
