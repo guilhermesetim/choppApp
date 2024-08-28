@@ -26,7 +26,7 @@ O projeto segue a arquitetura MVC:
 ## Tecnologias Utilizadas
 
 * **Flutter:** Framework principal para o desenvolvimento do aplicativo.
-* **Supabase:** Utilizado para autenticação, banco de dados e backend em tempo real.
+* **Supabase:** Utilizado para autenticação, banco de dados e backend.
 * **Arduino:** Controla o dispenser de chopp.
 * **Python:** servidor que recebe uma requisição via POST do aplicativo para liberar a bebida após a leitura do QR Code.
 
