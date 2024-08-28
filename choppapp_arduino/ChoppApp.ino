@@ -50,7 +50,7 @@ void loop() {
     // Acesse os dados do JSON
     String nome = doc["nome"];
 
-    // Faça algo com os dados recebidos
+    
     mensagemDisplay("Bem-vindo", nome);
     delay(5000);
 
